@@ -1,0 +1,85 @@
+<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library@1.0.1/build/nn.min.js"></script>
+<link rel="stylesheet" href="style.css">
+
+
+<div class="window"></div>
+<div class="cat"></div>
+<p class="zzz">Z</p>
+<div class="sky"></div>
+<div class="person"></div>
+<h1 class="speech"></h1>
+<button class="light-switch"></button>
+<div class="speech-bubble"></div>
+
+
+<script>
+  function rain () {
+    let x = nn.randomFloat(0, 100)
+    nn.create('div')
+      .css({
+        width: '0.1vmin',
+        height: '1vmin',
+        background: 'white',
+        animation: 'slide-in 0.8s ease-in-out 0s infinite',
+        'animation-fill-mode': 'backwards',
+      })
+      .position(x, 0)
+      .addTo('.sky')
+  }
+  
+  const script = {
+    1: "Hello there, traveler!",
+    2: "Welcome to my little corner of the web.",
+    3: "I've got to head out now. Take your time and look around.",
+  }
+  
+  
+  
+  
+
+  let state = {
+    index: 0,
+    light: 0,
+  }
+  
+  
+  async function talk () {
+    state.index += 1
+    if (state.index > 3) {
+      return
+    }
+    nn.get('div.speech-bubble').css('opacity', '1')
+    nn.get('h1.speech')
+      .content(script[state.index])
+    nn.get('.person')
+      .css('animation', 'shake 0.2s ease-in-out 5')
+    await nn.sleep(1000)
+    nn.get('.person').css('animation', 'none')
+    if (state.index === 3) {
+      await nn.sleep(500)
+      nn.get('div.speech-bubble').css('opacity', '0')
+      nn.get('h1.speech').content('')
+      nn.get('.person').css('animation', 'disappear 1s ease-in-out')
+      await nn.sleep(3000)
+      nn.get('.person').css('opacity', '0')
+    }
+  }
+  
+  let background
+  
+  function light () {
+    state.light += 1
+    if (state.light % 2 === 0) {
+      background = "linear-gradient(180deg,rgba(242, 233, 228, 1) 80%, rgba(201, 173, 167, 1) 80%)"
+    } else {
+      background = "black"
+    }
+    nn.get('body').css('background', background)
+  }
+
+  nn.get('button.light-switch').on('click', light)
+  nn.on('keydown', talk)
+  nn.on('load', rain)
+</script>
+  
+

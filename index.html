@@ -1,85 +1,639 @@
-<script src="https://cdn.jsdelivr.net/gh/netizenorg/netnet-standard-library@1.0.1/build/nn.min.js"></script>
-<link rel="stylesheet" href="style.css">
+<!DOCTYPE html>
+
+<html lang="en-US">
+  <head>
+    <title>Witch's Cottage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Agrave+Pro:wght@100&family=Fuzzy+Bubbles:wght@400;700&family=IM+Fell+DW+Pica+SC&family=Shantell+Sans:ital,wght@0,300..800;1,300..800&family=Stalemate&display=swap" rel="stylesheet">
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      .title {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 800px;
+        height: 100px;
+        animation: fade ease-in-out;
+        animation-timeline: scroll();
+        animation-range: 83% 100%;
+        z-index: 1;
+      }
+      
+      .title::before {
+        content: "";
+        top: 20%;
+        width: 800px;
+        height: 200px;
+        position: absolute;
+        animation: expand ease-in-out;
+        animation-timeline: scroll();
+        animation-range: 83% 100%;
+        background:
+          linear-gradient(black) 0px 65% / 320px 2px no-repeat,
+          linear-gradient(black) 480px 65% / 320px 2px no-repeat;
+      }
+
+      p {
+        font-family: "Agrave Pro", "Shantell Sans", "Fuzzy Bubbles", sans-serif;
+        font-weight: 100;
+        animation: fade ease-in-out;
+        animation-timeline: view();
+        font-size: 2rem;
+      }
+
+      h2 {
+        font-family: "Stalemate", sans-serif;
+        font-weight: 400;
+        font-size: clamp(2rem, 1.8rem + 3vmin, 2.5rem);
+        margin: 0;
+        position: relative;
+        bottom: 20%;
+
+      }
+
+      h1 {
+        font-family: "IM Fell DW Pica SC", sans-serif;
+        font-weight: 600;
+        font-size: 15vmin;
+        margin: 0;
+      }
+
+      @keyframes slide-fast {
+        0% {
+          transform: translateX(30vmin);
+        }
+
+        100% {
+          transform: translateX(-30vmin);
+        }
+      }
+      
+      @keyframes slide-slow {
+        0% {
+          transform: translateX(15vmin);
+        }
+
+        100% {
+          transform: translateX(-15vmin);
+        }
+      }
+
+      @keyframes fade {
+        0% {
+          opacity: 0;
+          filter: blur(5px);
+        }
+
+        60% {
+          opacity: 1;
+          filter: blur(0);
+        }
+      }
+
+      .leaf {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100px;
+        transform: rotate(120deg);
+        border-radius: 0% 100% 27% 73% / 0% 62% 38% 100%;
+        background: linear-gradient(45deg, rgba(237, 141, 62, 1) 50%, rgba(250, 158, 82, 1) 50%);
+
+        offset-path: path("M 2163.18 400 C 1669.05 418 1373 150 1302.1453 108.8 C 1246 82 1021.1955 133.6 930.13 277 C 868.25 394 927.4 489 960.16 522 C 982 546 1163.09 638 1303.23 491 C 1455.2 300 1166 69 852.416 194.4 C 375.94 450 246.72 613 -564.09 400");
+
+        animation: blow linear both;
+        animation-timeline: scroll();
+        animation-range: 40% 95%;
+      }
+
+      .leaf::before {
+        content: "";
+        position: absolute;
+        width: 130px;
+        height: 130px;
+        clip-path: polygon(19.75% 19.75%, 83.45% 81.67%, 83.45% 84.5%);
+        background-color: #000000
+      }
+
+      .bird {
+        width: 100px;
+        height: 100px;
+        position: absolute;
+        top: 210vmin;
+        animation-name: shrink;
+        animation-timeline: view();
+        background: radial-gradient(circle closest-side, black 50%, transparent 50%) 40px 40px / 20px 20px no-repeat;
+      }
+
+      .bird::before,
+      .bird::after {
+        content: "";
+        position: absolute;
+        width: 100px;
+        height: 100px;
+
+        animation-iteration-count: 3;
+        animation-timeline: view();
+      }
+
+      .bird::before {
+        animation-name: wings-up;
+        background:
+          radial-gradient(ellipse 100% 100% at bottom right, transparent 45%, black 45%, black 50%, transparent 50%) 0 0 / 100px 50px no-repeat,
+          radial-gradient(ellipse 100% 100% at bottom left, transparent 45%, black 45%, black 50%, transparent 50%) 0 0 / 100px 50px no-repeat;
+      }
+
+      .bird::after {
+        animation-name: wings-down;
+        background:
+          radial-gradient(ellipse 100% 100% at top right, transparent 45%, black 45%, black 50%, transparent 50%) 0 50px / 100px 50px no-repeat,
+          radial-gradient(ellipse 100% 100% at top left, transparent 45%, black 45%, black 50%, transparent 50%) 0 50px / 100px 50px no-repeat;
+      }
+
+      .cloud-1,
+      .cloud-2 {
+        position: absolute;
+        animation: slide-fast ease-in both;
+        animation-timeline: view();
+      }
+      
+      
+      
+      .cloud-3 {
+        position: absolute;
+        animation: slide-slow ease-in both;
+        animation-timeline: view();
+      }
+
+      .cloud-1 {
+        width: 450px;
+        height: 200px;
+        top: 500px;
+        background:
+          radial-gradient(circle closest-side, white 100%, transparent 100%) 200px 90px / 100px 100px no-repeat,
+          radial-gradient(ellipse, white 50%, transparent 50%) 170px 130px / 200px 100px no-repeat,
+          radial-gradient(circle closest-side, white 100%, transparent 100%) 20px 110px / 100px 100px no-repeat,
+          radial-gradient(circle closest-side, white 100%, transparent 100%) 50px 0 / 200px 200px no-repeat,
+          radial-gradient(ellipse 100% 30% at bottom, white 50%, transparent 50%) no-repeat;
+      }
+
+      .cloud-2 {
+        width: 600px;
+        height: 200px;
+        top: 1200px;
+        background:
+          radial-gradient(ellipse, white 50%, transparent 50%) 430px 140px / 100px 100px no-repeat,
+          radial-gradient(ellipse, white 50%, transparent 50%) 330px 110px / 150px 150px no-repeat,
+          radial-gradient(ellipse, white 50%, transparent 50%) 290px 130px / 100px 100px no-repeat,
+          radial-gradient(ellipse, white 50%, transparent 50%) 30px 130px / 200px 100px no-repeat,
+          radial-gradient(ellipse, white 50%, transparent 50%) 70px 50px / 300px 200px no-repeat,
+          radial-gradient(ellipse 100% 30% at bottom, white 50%, transparent 50%) no-repeat;
+      }
+
+      .cloud-3 {
+        width: 300px;
+        height: 200px;
+        top: 1500px;
+        background:
+          radial-gradient(ellipse, white 50%, transparent 50%) 80px 165px / 200px 50px no-repeat,
+
+          radial-gradient(ellipse, white 50%, transparent 50%) 10px 150px / 200px 70px no-repeat,
+          radial-gradient(ellipse 100% 20% at bottom, white 50%, transparent 50%) no-repeat;
+      }
 
 
-<div class="window"></div>
-<div class="cat"></div>
-<p class="zzz">Z</p>
-<div class="sky"></div>
-<div class="person"></div>
-<h1 class="speech"></h1>
-<button class="light-switch"></button>
-<div class="speech-bubble"></div>
+      html {
+        overscroll-behavior: none;
+      }
+
+      body {
+        margin: 0;
+        height: 5000px;
+        background: linear-gradient(#B9D5E8, #C5C9DE, #D5AFC0, #C18C9D, #986477, #66536B, #493B50, #252B3B);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        overflow-x: hidden;
+      }
+
+      .text {
+        height: 4000px;
+        margin: 15vmin;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        margin: 40vh 0;
+      }
 
 
-<script>
-  function rain () {
-    let x = nn.randomFloat(0, 100)
-    nn.create('div')
-      .css({
-        width: '0.1vmin',
-        height: '1vmin',
-        background: 'white',
-        animation: 'slide-in 0.8s ease-in-out 0s infinite',
-        'animation-fill-mode': 'backwards',
-      })
-      .position(x, 0)
-      .addTo('.sky')
+      @keyframes blow {
+        0% {
+          offset-distance: 0%;
+        }
+
+        100% {
+          offset-distance: 100%;
+        }
+      }
+
+      @keyframes wings-up {
+
+        0%,
+        49.9% {
+          opacity: 1;
+        }
+
+        50%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes wings-down {
+
+        0%,
+        49.9% {
+          opacity: 0;
+        }
+
+        50%,
+        100% {
+          opacity: 1;
+        }
+      }
+      
+      @keyframes shrink {
+        0% {
+          transform: scale(1);
+        }
+        100% {
+          transform: scale(0.8)
+        }
+      }
+      
+      @keyframes expand {
+        0% {
+          filter: blur(10px);
+          transform: scaleX(0);
+        }
+        100% {
+          filter: blur(0);
+          transform: scaleX(1)
+        }
+      }
+      
+  
+  :root {
+    --aged-parchment: #D6C9AD;
+    --walnut: #49372A;
+    --dark-espresso: #30251E;
+    --deep-charcoal: #343633;
+    --stone-gray: #62645C;
+    --light: #F9EA9A;
+    --glass: #82a6b1;
+    --wine: #621b00;
   }
   
-  const script = {
-    1: "Hello there, traveler!",
-    2: "Welcome to my little corner of the web.",
-    3: "I've got to head out now. Take your time and look around.",
-  }
-  
-  
-  
-  
+  .house {
 
-  let state = {
-    index: 0,
-    light: 0,
-  }
-  
-  
-  async function talk () {
-    state.index += 1
-    if (state.index > 3) {
-      return
-    }
-    nn.get('div.speech-bubble').css('opacity', '1')
-    nn.get('h1.speech')
-      .content(script[state.index])
-    nn.get('.person')
-      .css('animation', 'shake 0.2s ease-in-out 5')
-    await nn.sleep(1000)
-    nn.get('.person').css('animation', 'none')
-    if (state.index === 3) {
-      await nn.sleep(500)
-      nn.get('div.speech-bubble').css('opacity', '0')
-      nn.get('h1.speech').content('')
-      nn.get('.person').css('animation', 'disappear 1s ease-in-out')
-      await nn.sleep(3000)
-      nn.get('.person').css('opacity', '0')
-    }
-  }
-  
-  let background
-  
-  function light () {
-    state.light += 1
-    if (state.light % 2 === 0) {
-      background = "linear-gradient(180deg,rgba(242, 233, 228, 1) 80%, rgba(201, 173, 167, 1) 80%)"
-    } else {
-      background = "black"
-    }
-    nn.get('body').css('background', background)
-  }
+    height: 90vmin;
+    width: 80vmin;
+    background:
+      
+      
+      /* glow */
+      radial-gradient(ellipse 100% 100%, #ffb20f90 0%, transparent 50%) 30.5vmin 47vmin / 20vmin 20vmin no-repeat,
+      radial-gradient(ellipse 100% 100%, #ffe54890 0%, transparent 50%) 20.5vmin 37vmin / 40vmin 40vmin no-repeat,
 
-  nn.get('button.light-switch').on('click', light)
-  nn.on('keydown', talk)
-  nn.on('load', rain)
-</script>
-  
+      
+      /* lamp */
+      conic-gradient(transparent 170deg, var(--wine) 170deg, var(--wine) 190deg, transparent 190deg) 38vmin 51vmin / 5vmin 3vmin no-repeat,
+      linear-gradient(var(--wine)) 39.5vmin 59vmin / 2vmin 1vmin no-repeat,
+      linear-gradient(var(--stone-gray)) 40vmin 59vmin / 1vmin 1.5vmin no-repeat,
+      radial-gradient(ellipse 100% 100% at bottom, var(--wine) 50%, transparent 50%) 38vmin 53vmin / 5vmin 2vmin no-repeat,
+      linear-gradient(110deg, var(--glass) 60%, transparent 60%) 40vmin 55vmin / 3vmin 5vmin no-repeat,
+      linear-gradient(70deg, transparent 60%, var(--glass) 60%) 37vmin 55vmin / 3vmin 5vmin no-repeat,
 
+      
+      
+      /* grass */
+      radial-gradient(ellipse 100% 100% at bottom left, transparent 47%, #adc178 47%, #adc178 50%, transparent 51%) 36.5vmin 63.3vmin / 5vmin 5vmin no-repeat,
+      radial-gradient(ellipse 100% 300% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 37.5vmin 63.3vmin / 3vmin 5vmin no-repeat,
+      
+      
+      radial-gradient(ellipse 100% 350% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 44vmin 71vmin / 3vmin 3vmin no-repeat,
+      radial-gradient(ellipse 100% 350% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 44.5vmin 68.8vmin / 3vmin 5vmin no-repeat,
+
+      
+      radial-gradient(ellipse 100% 250% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 48.5vmin 67vmin / 3vmin 6vmin no-repeat,
+      radial-gradient(ellipse 100% 200% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 48.5vmin 68.2vmin / 2vmin 5vmin no-repeat,
+      
+      radial-gradient(ellipse 100% 280% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 55vmin 69vmin / 3vmin 5vmin no-repeat,
+      radial-gradient(ellipse 100% 280% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 56.5vmin 69vmin / 3vmin 5vmin no-repeat,
+      
+      
+      radial-gradient(ellipse 100% 300% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 58.5vmin 70.1vmin / 3vmin 3vmin no-repeat,
+      radial-gradient(ellipse 100% 300% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 58.2vmin 69.2vmin / 3vmin 4vmin no-repeat,
+      
+      radial-gradient(ellipse 100% 280% at bottom left, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 63vmin 67.5vmin / 3vmin 5vmin no-repeat,
+      radial-gradient(ellipse 100% 280% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 63vmin 67.5vmin / 3vmin 5vmin no-repeat,
+      
+      radial-gradient(ellipse 100% 180% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 67vmin 69.2vmin / 4vmin 3vmin no-repeat,
+      radial-gradient(ellipse 100% 220% at bottom right, transparent 48%, #adc178 49%, #adc178 52%, transparent 53%) 67vmin 67.2vmin / 4vmin 5vmin no-repeat,
+      
+      
+
+      
+      /* bushes */      
+      radial-gradient(ellipse 100% 100%, #656d4a 50%, transparent 50%) 61vmin 63vmin / 7vmin 7vmin no-repeat,
+      radial-gradient(ellipse 100% 100%, #656d4a 50%, transparent 50%) 53vmin 61vmin / 13vmin 10vmin no-repeat,
+      radial-gradient(ellipse 100% 100%, #656d4a 50%, transparent 50%) 43vmin 60.5vmin / 15vmin 10vmin no-repeat,
+      radial-gradient(ellipse 100% 100%, #656d4a 50%, transparent 50%) 40vmin 62.5vmin / 8vmin 7vmin no-repeat,
+      radial-gradient(ellipse 100% 230%, #656d4a 50%, transparent 50%) 39vmin 67vmin / 30vmin 5vmin no-repeat,
+      
+      
+      /* steps */
+      linear-gradient(to top right, #a9927d 50%, transparent 50%) 37.5vmin 68vmin / 0.5vmin 1vmin no-repeat,
+      linear-gradient(to top left, #a9927d 50%, transparent 50%) 26vmin 68vmin / 0.5vmin 1vmin no-repeat,
+      linear-gradient(#a9927d) 26.5vmin 68vmin / 11vmin 1vmin no-repeat,
+      linear-gradient(#5e503f) 26vmin 69vmin / 12vmin 1vmin no-repeat,
+      linear-gradient(to top right, #a9927d 50%, transparent 50%) 37vmin 66vmin / 0.5vmin 1vmin no-repeat,
+      linear-gradient(to top left, #a9927d 50%, transparent 50%) 26.5vmin 66vmin / 0.5vmin 1vmin no-repeat,
+      linear-gradient(#a9927d) 27vmin 66vmin / 10vmin 1vmin no-repeat,
+      linear-gradient(#5e503f) 26.5vmin 67vmin / 11vmin 1vmin no-repeat,
+      
+      /* window top */
+      linear-gradient(var(--dark-espresso)) 42vmin 32vmin / 8vmin 1vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 41vmin 41.5vmin / 10vmin 1.5vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 42vmin 32vmin / 1vmin 10vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 49vmin 32vmin / 1vmin 10vmin no-repeat,
+      linear-gradient(var(--light)) 42vmin 32vmin / 8vmin 10vmin no-repeat,
+      
+      /* window bottom */
+ 
+      linear-gradient(var(--dark-espresso)) 44vmin 51vmin / 1vmin 10vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 57vmin 51vmin / 1vmin 10vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 50vmin 51vmin / 2vmin 10vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 44vmin 56.25vmin / 14vmin 0.5vmin no-repeat,
+      
+      linear-gradient(var(--dark-espresso)) 44vmin 51vmin / 14vmin 1vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 43vmin 61vmin / 16vmin 1.5vmin no-repeat,
+      linear-gradient(var(--light)) 44vmin 51vmin / 14vmin 10vmin no-repeat,
+      
+   
+
+
+      
+      /* door */
+      radial-gradient(ellipse 100% 100% at bottom, var(--walnut) 50%, transparent 50%) 28vmin 48vmin / 8vmin 8vmin no-repeat,
+      linear-gradient(var(--walnut)) 28vmin 56vmin / 8vmin 10vmin no-repeat,
+      
+      /* doorframe */
+      radial-gradient(ellipse 100% 100% at bottom, var(--dark-espresso) 50%, transparent 50%) 27vmin 46vmin / 10vmin 10vmin no-repeat,
+
+      linear-gradient(var(--dark-espresso)) 27vmin 55.5vmin / 1vmin 14vmin no-repeat,
+      linear-gradient(var(--dark-espresso)) 36vmin 55.5vmin / 1vmin 14vmin no-repeat,
+      
+      /* under-roof 2 */
+      linear-gradient(to top left, var(--dark-espresso) 50%, transparent 50%) 21vmin 46.5vmin / 1vmin 0.5vmin no-repeat,
+      linear-gradient(to top right, var(--dark-espresso) 50%, transparent 50%) 64vmin 46.5vmin / 0.8vmin 0.5vmin no-repeat,
+      
+      /* front-roof shadow */
+      radial-gradient(ellipse 207% 360% at top right, transparent 50%, black 50%, transparent 50.2%) 47vmin -9vmin / 125vmin 56vmin no-repeat,
+      radial-gradient(ellipse 200% 155% at top left, transparent 70%, black 70%, transparent 70.4%) -9vmin -78vmin / 56vmin 125vmin no-repeat,
+
+
+
+      
+
+      /* wooden column and beams shadow */
+      linear-gradient(90deg, black 0%, transparent 100%) 39vmin 31vmin / 0.5vmin 14vmin no-repeat,
+      linear-gradient(270deg, black 0%, transparent 100%) 52.5vmin 31vmin / 0.5vmin 14vmin no-repeat,
+      
+      linear-gradient(270deg, black 0%, transparent 100%) 61.5vmin 44vmin / 0.5vmin 1vmin no-repeat,
+      
+      
+      linear-gradient(180deg, black 0%, transparent 100%) 24vmin 47vmin / 38vmin 0.5vmin no-repeat,
+      linear-gradient(90deg, black 0%, transparent 100%) 24vmin 47vmin / 0.5vmin 20vmin no-repeat,
+      linear-gradient(270deg, black 0%, transparent 100%) 61.5vmin 47vmin / 0.5vmin 20vmin no-repeat,
+
+      
+      
+      /* wooden column and beams */
+      linear-gradient(to top right, var(--walnut) 50%, transparent 50%) 53vmin 30vmin / 2vmin 2.1vmin no-repeat,
+      linear-gradient(to top left, var(--walnut) 50%, transparent 50%) 37vmin 29vmin / 2vmin 2vmin no-repeat,
+      
+      linear-gradient(45deg, transparent 40%, var(--walnut) 40%, var(--walnut) 60%, transparent 60%) 30vmin 38vmin / 8vmin 8vmin no-repeat,
+      linear-gradient(135deg, transparent 38%, var(--walnut) 38%, var(--walnut) 62%, transparent 62%) 53.5vmin 39.5vmin / 6.5vmin 6.5vmin no-repeat,
+      
+      linear-gradient(var(--walnut)) 38vmin 29vmin / 15vmin 2vmin no-repeat,
+      linear-gradient(var(--walnut)) 46vmin 17vmin / 2vmin 13vmin no-repeat,
+      
+      linear-gradient(var(--walnut)) 37vmin 30vmin / 2vmin 16vmin no-repeat,
+      linear-gradient(var(--walnut)) 53vmin 32vmin / 2vmin 14vmin no-repeat,
+      linear-gradient(var(--walnut)) 23vmin 45vmin / 40vmin 2vmin no-repeat,
+      linear-gradient(var(--walnut)) 22vmin 45vmin / 2vmin 22vmin no-repeat,
+      linear-gradient(var(--walnut)) 62vmin 44vmin / 2vmin 23vmin no-repeat,
+
+      
+      
+      
+      /* front-roof */
+      radial-gradient(ellipse 207% 360% at top right, transparent 50%, var(--aged-parchment) 50%) 47vmin -9vmin / 125vmin 56vmin no-repeat,
+      radial-gradient(ellipse 200% 155% at top left, transparent 70%, var(--aged-parchment) 50%) -9vmin -78vmin / 56vmin 125vmin no-repeat,
+      radial-gradient(ellipse 200% 150% at top left, transparent 70%, var(--walnut) 50%) -3vmin -76vmin / 50vmin 123vmin no-repeat,
+      radial-gradient(ellipse 205% 350% at top right, transparent 50%, var(--walnut) 50%) 47vmin -6vmin / 125vmin 53vmin no-repeat,
+      
+      
+      /* right roof tiles */
+      linear-gradient(65deg, #69483f 50%, transparent 50%) 46.9vmin 14.2vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(62deg, #69483f 50%, transparent 50%) 47.1vmin 15.7vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(60deg, #69483f 50%, transparent 50%) 48vmin 17.7vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(55deg, #69483f 50%, transparent 50%) 48.5vmin 19.3vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(63deg, #69483f 50%, transparent 50%) 49.3vmin 21.2vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(59deg, #69483f 50%, transparent 50%) 50.1vmin 23vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(53deg, #69483f 50%, transparent 50%) 51.2vmin 25vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(55deg, #69483f 50%, transparent 50%) 52.1vmin 27vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(55deg, #69483f 50%, transparent 50%) 53.2vmin 29vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(50deg, #69483f 50%, transparent 50%) 54.3vmin 30.8vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(50deg, #69483f 50%, transparent 50%) 55.4vmin 32.5vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(50deg, #69483f 50%, transparent 50%) 56.4vmin 34.1vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(48deg, #69483f 50%, transparent 50%) 57.3vmin 35.5vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(45deg, #69483f 50%, transparent 50%) 58.2vmin 36.8vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(42deg, #69483f 50%, transparent 50%) 59.2vmin 38.1vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(40deg, #69483f 50%, transparent 50%) 60.5vmin 39.6vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(38deg, #69483f 50%, transparent 50%) 61.7vmin 41vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(38deg, #69483f 50%, transparent 50%) 61.7vmin 41vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(38deg, #69483f 50%, transparent 50%) 63vmin 42.5vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(37deg, #69483f 50%, transparent 50%) 64.2vmin 43.8vmin / 2vmin 2vmin no-repeat,
+      linear-gradient(35deg, #69483f 50%, transparent 50%) 65.1vmin 44.95vmin / 2vmin 2vmin no-repeat,
+      
+      
+      
+      /* left roof tiles */
+      linear-gradient(115deg, transparent 50%, #69483f 50%) 45.5vmin 14.2vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(120deg, transparent 50%, #69483f 50%) 44.8vmin 15.7vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(125deg, transparent 50%, #69483f 50%) 43.8vmin 17.2vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(125deg, transparent 50%, #69483f 50%) 42.8vmin 18.9vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(130deg, transparent 50%, #69483f 50%) 41.8vmin 20.5vmin / 1.5vmin 2vmin no-repeat,
+      linear-gradient(132deg, transparent 50%, #69483f 50%) 40.8vmin 21.9vmin / 1.5vmin 2.1vmin no-repeat,
+      linear-gradient(132deg, transparent 50%, #69483f 50%) 39.9vmin 23.4vmin / 1.5vmin 2.2vmin no-repeat,
+      linear-gradient(132deg, transparent 50%, #69483f 50%) 38.9vmin 24.9vmin / 1.5vmin 2.2vmin no-repeat,
+      linear-gradient(134deg, transparent 50%, #69483f 50%) 37.5vmin 26.6vmin / 1.7vmin 2.2vmin no-repeat,
+      linear-gradient(134deg, transparent 50%, #69483f 50%) 36.2vmin 28.3vmin / 1.7vmin 2.2vmin no-repeat,
+      linear-gradient(136deg, transparent 50%, #69483f 50%) 35vmin 29.7vmin / 2vmin 2.2vmin no-repeat,
+      linear-gradient(136deg, transparent 50%, #69483f 50%) 33.5vmin 31.5vmin / 2vmin 2.2vmin no-repeat,
+      linear-gradient(136deg, transparent 50%, #69483f 50%) 32vmin 33.2vmin / 2vmin 2.2vmin no-repeat,
+      linear-gradient(140deg, transparent 50%, #69483f 50%) 30.2vmin 35vmin / 2.2vmin 2.2vmin no-repeat,
+      linear-gradient(140deg, transparent 50%, #69483f 50%) 28.8vmin 36.5vmin / 2.2vmin 2.2vmin no-repeat,
+      linear-gradient(140deg, transparent 50%, #69483f 50%) 27vmin 38.2vmin / 2.2vmin 2.2vmin no-repeat,
+      linear-gradient(150deg, transparent 50%, #69483f 50%) 25.2vmin 39.8vmin / 2.2vmin 2.2vmin no-repeat,
+      linear-gradient(150deg, transparent 50%, #69483f 50%) 23.2vmin 41vmin / 3vmin 2.2vmin no-repeat,
+      linear-gradient(152deg, transparent 50%, #69483f 50%) 21.2vmin 42.5vmin / 3vmin 2.2vmin no-repeat,
+      linear-gradient(152deg, transparent 50%, #69483f 50%) 18.4vmin 43.7vmin / 4vmin 3.2vmin no-repeat,
+
+      
+      
+      /* under-roof */
+      linear-gradient(to bottom left, var(--dark-espresso) 50%, transparent 50%) 18.5vmin 46.9vmin / 5vmin 1vmin no-repeat,
+      linear-gradient(to bottom right, var(--dark-espresso) 50%, transparent 50%) 62vmin 46.9vmin / 5vmin 1vmin no-repeat,
+
+      
+      linear-gradient(var(--aged-parchment)) 22vmin 45vmin / 40vmin 22vmin no-repeat;
+    
+
+  }
+      
+      .grass {
+        width: 100vw;
+        height: 20vh;
+        background: green;
+      }
+      
+      .tree-left {
+        width: 90vmin;
+        height: 90vmin;
+        position: absolute;
+        bottom: 2vmin;
+        left: 30vw;
+        
+
+        background:
+          
+          /* tree 3 */
+          conic-gradient(transparent 160deg, #E9A94F 160deg, #E9A94F 200deg, transparent 200deg) 0vmin -25.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #E9A94F 50%, transparent 50%) 34vmin 45vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 47vmin 30vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 43vmin 30vmin / 10vmin 60vmin no-repeat,
+          
+          /* tree 1 */
+          conic-gradient(transparent 160deg, #D77A36 160deg, #D77A36 200deg, transparent 200deg) 20vmin -30.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #D77A36 50%, transparent 50%) 54vmin 40vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 67vmin 25vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 63vmin 25vmin / 10vmin 60vmin no-repeat,
+    
+        /* tree 2 */
+          conic-gradient(transparent 160deg, #D77A36 160deg, #D77A36 200deg, transparent 200deg) -20vmin -35.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #D77A36 50%, transparent 50%) 14vmin 35vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 27vmin 20vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 23vmin 20vmin / 10vmin 60vmin no-repeat;
+        
+        animation: slide-left ease-in both;
+        animation-timeline: view();
+        animation-range: entry 50% entry 100%;
+      }
+      
+      .tree-right {
+        width: 90vmin;
+        height: 90vmin;
+        position: absolute;
+        bottom: 2vmin;
+        right: 30vw;
+
+        background:
+          
+          /* tree 3 */
+          conic-gradient(transparent 160deg, #E9A94F 160deg, #E9A94F 200deg, transparent 200deg) 0vmin -25.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #E9A94F 50%, transparent 50%) 34vmin 45vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 47vmin 30vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 43vmin 30vmin / 10vmin 60vmin no-repeat,
+          
+          /* tree 1 */
+          conic-gradient(transparent 160deg, #F0CE7A 160deg, #F0CE7A 200deg, transparent 200deg) -20vmin -30.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #F0CE7A 50%, transparent 50%) 14vmin 40vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 27vmin 25vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 23vmin 25vmin / 10vmin 60vmin no-repeat,
+    
+        /* tree 2 */
+          conic-gradient(transparent 160deg, #D77A36 160deg, #D77A36 200deg, transparent 200deg) 20vmin -35.5vmin / 100vmin 80vmin no-repeat,
+          radial-gradient(ellipse 100% 100%, #D77A36 50%, transparent 50%) 54vmin 35vmin / 32vmin 32vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top right, transparent 50%, #572F27 50%) 67vmin 20vmin / 10vmin 60vmin no-repeat,
+          radial-gradient(ellipse 80% 200% at top left, transparent 50%, #572F27 50%) 63vmin 20vmin / 10vmin 60vmin no-repeat;
+        
+        animation: slide-right ease-in both;
+        animation-timeline: view();
+        animation-range: entry 50% entry 100%;
+      }
+      
+      @keyframes slide-left {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(-600px);
+        }
+      }
+      
+      @keyframes slide-right {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(600px);
+        }
+      }
+      
+    </style>
+  </head>
+  <body>
+    <div class="bird"></div>
+    <div class="cloud-1"></div>
+    <div class="cloud-2"></div>
+    <div class="cloud-3"></div>
+    <div class="leaf"></div>
+    <div class="text">
+      <p>
+        Autumn had painted the countryside in shades of amber and gold...
+      </p>
+      <p>
+        Yet a bitter chill lingered in the air, as though winter were already knocking at the door.
+      </p>
+      <p>
+        The wind swept through the trees, carrying the last fallen leaves along its winding path...
+      </p>
+      <p>
+        And tucked away in the corner of the forest there stood...
+      </p>
+    </div>
+    <div class="title">
+      <h1>
+        Witch's Cottage
+      </h1>
+      <h2>
+        Welcome to the
+      </h2>
+    </div>
+    <div class="house"></div>
+    <div class="tree-left"></div>
+    <div class="tree-right"></div>
+
+  </body>
+</html>
